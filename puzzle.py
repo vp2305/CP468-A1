@@ -24,22 +24,22 @@ class Puzzle:
         """
         Create a puzzle based on the numRows and numColumns
         """
-        self.S = [[7, 2, 4], [5, 0, 6], [8, 3, 1]]
-        # possibleValues = []
-        # for i in range(0, self.numRows * self.numColumns):
-        #     possibleValues.append(i)
+        # self.S = [[7, 2, 4], [5, 0, 6], [8, 3, 1]]
+        possibleValues = []
+        for i in range(0, self.numRows * self.numColumns):
+            possibleValues.append(i)
 
-        # for i in range(self.numRows):
-        #     self.S.append([])
-        #     for j in range(self.numColumns):
-        #         self.S[i].append(
-        #             (possibleValues.pop(random.randint(0, len(possibleValues) - 1)))
-        #         )
+        for i in range(self.numRows):
+            self.S.append([])
+            for j in range(self.numColumns):
+                self.S[i].append(
+                    (possibleValues.pop(random.randint(0, len(possibleValues) - 1)))
+                )
 
-        # puzzleStateCheck = self.stateSolvable()
-        # if puzzleStateCheck == False:
-        #     self.S = []
-        #     self.createPuzzle()
+        puzzleStateCheck = self.stateSolvable()
+        if puzzleStateCheck == False:
+            self.S = []
+            self.createPuzzle()
 
     def getInvCount(self):
         flatState = []
