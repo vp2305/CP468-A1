@@ -17,6 +17,7 @@ TODO
     - Closed list is a list of nodes that are already expanded
 """
 
+from operator import itemgetter
 from node import Node
 
 
@@ -35,15 +36,19 @@ def aStar(currNode):
     # g = The movement cost from the starting point to a given square on the grid, following the path generated to get there.
     # h = the estimated movement cost to move from that given square on the grid to the final destination.
 
-    openList = []
-    closedList = []
+    openList = {}
+    closedList = {}
 
-    openList.append(currNode)
+    openList[str(currNode.S)] = currNode
+
     while True:
-        currPuzzle: Node = openList[0]
+        currPuzzle: Node = openList.popitem()[1]
 
         print("\nSelected puzzle state")
         print(currPuzzle)
+
+        # Update the close list by adding and removing the current selected puzzle state
+        closedList[str(currPuzzle.S)] = currPuzzle
 
         # Found the goal state
         if currPuzzle.h_2 == 0:
@@ -67,40 +72,36 @@ def aStar(currNode):
 
         # Append new states after the moves to the open state
         if currPuzzle.right != None:
-            if any(currPuzzle.right.S == obj.S for obj in openList):
-                pass
-            else:
-                openList.append(currPuzzle.right)
+            if ((str(currPuzzle.right.S) in openList) == False) and (
+                (str(currPuzzle.right.S) in closedList) == False
+            ):
+                openList[str(currPuzzle.right.S)] = currPuzzle.right
 
         if currPuzzle.left != None:
-            if any(currPuzzle.left.S == obj.S for obj in openList):
-                pass
-            else:
-                openList.append(currPuzzle.left)
+            if ((str(currPuzzle.left.S) in openList) == False) and (
+                (str(currPuzzle.left.S) in closedList) == False
+            ):
+                openList[str(currPuzzle.left.S)] = currPuzzle.left
 
         if currPuzzle.up != None:
-            if any(currPuzzle.up.S == obj.S for obj in openList):
-                pass
-            else:
-                openList.append(currPuzzle.up)
+            if ((str(currPuzzle.up.S) in openList) == False) and (
+                (str(currPuzzle.up.S) in closedList) == False
+            ):
+                openList[str(currPuzzle.up.S)] = currPuzzle.up
 
         if currPuzzle.down != None:
-            if any(currPuzzle.down.S == obj.S for obj in openList):
-                pass
-            else:
-                openList.append(currPuzzle.down)
-
-        # Update the close list by adding and removing the current selected puzzle state
-        closedList.append(currPuzzle)
-        del openList[0]
+            if ((str(currPuzzle.down.S) in openList) == False) and (
+                (str(currPuzzle.down.S) in closedList) == False
+            ):
+                openList[str(currPuzzle.down.S)] = currPuzzle.down
 
         # Sort the open list by the f value (g + h)
-        openList.sort(key=lambda x: x.fValue, reverse=False)
+        openList = dict(
+            sorted(openList.items(), key=lambda x: x[1].fValue, reverse=True)
+        )
 
 
 puzzleNode = Node(3, [], 0)
 puzzleNode.depth = 0
 
-# print(puzzleNode)
-# print(puzzleNode.stateSolvable())
 aStar(puzzleNode)

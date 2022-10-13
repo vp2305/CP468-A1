@@ -18,7 +18,7 @@ class Puzzle:
         self.h_2 = self.h2()
 
     def __str__(self) -> str:
-        return f"{self.S}\nh1:{self.h_1}\nh2:{self.h_2}\nDepth:{self.depth}"
+        return f"{self.S}\nh1:{self.h_1}\nh2:{self.h_2}\nDepth:{self.depth}\nF Score: {self.fValue}"
 
     def createPuzzle(self):
         """
