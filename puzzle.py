@@ -6,9 +6,10 @@ class Puzzle:
     Create a puzzle based on the numRows and numColumns
     """
 
-    def __init__(self, numRowColumns: int, state: list) -> None:
+    def __init__(self, numRowColumns: int, state: list, heuristicType: str) -> None:
         self.numRows = numRowColumns
         self.numColumns = numRowColumns
+        self.heuristicType = heuristicType
         self.S = state
         self.goalState = []
         self.createGoalState()
@@ -117,8 +118,51 @@ class Puzzle:
 
         return totalSumOfManhattanDistances
 
+    def h3(self):
+        """
+        h3(S) = sum of Manhattan distances + 2 * linear conflict
+        Linear conflict implementation
+        """
+        linearConflict = 0
+        totalSumOfManhattanDistances = 0
+        # Implement linear conflict heuristic
+        for c in range(self.numColumns):
+            for r in range(self.numRows):
+                if self.S[r][c] != 0 and self.S[r][c] != self.goalState[r][c]:
+                    numRowMove = abs(self.S[r][c] // self.numColumns - r)
+                    numColMove = abs(self.S[r][c] % self.numColumns - c)
+                    totalSumOfManhattanDistances += numRowMove + numColMove
+
+                    # Check for linear conflict
+                    # Check for row conflict
+                    if self.S[r][c] // self.numColumns == r:
+                        for i in range(c + 1, self.numColumns):
+                            if self.S[r][i] // self.numColumns == r:
+                                if (
+                                    self.S[r][c] % self.numColumns
+                                    > self.S[r][i] % self.numColumns
+                                ):
+                                    linearConflict += 2
+
+                    # Check for column conflict
+                    if self.S[r][c] % self.numColumns == c:
+                        for i in range(r + 1, self.numRows):
+                            if self.S[i][c] % self.numColumns == c:
+                                if (
+                                    self.S[r][c] // self.numColumns
+                                    > self.S[i][c] // self.numColumns
+                                ):
+                                    linearConflict += 2
+
+        return totalSumOfManhattanDistances + linearConflict
+
     def fScore(self):
         """
-        h3(S) = level + h2(S)
+        f(S) = level + h2(S)
         """
-        return self.depth + self.h2()
+        if self.heuristicType == "h1":
+            return self.depth + self.h1()
+        elif self.heuristicType == "h2":
+            return self.depth + self.h2()
+        else:
+            return self.depth + self.h3()

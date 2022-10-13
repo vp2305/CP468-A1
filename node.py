@@ -4,8 +4,10 @@ from puzzle import Puzzle
 
 
 class Node(Puzzle):
-    def __init__(self, numRowColumns, state, depth) -> None:
-        super().__init__(numRowColumns=numRowColumns, state=state)
+    def __init__(self, numRowColumns, state, depth, heuristicType) -> None:
+        super().__init__(
+            numRowColumns=numRowColumns, state=state, heuristicType=heuristicType
+        )
         self.parent = None
         self.left = None
         self.right = None
@@ -36,7 +38,9 @@ class Node(Puzzle):
             ][emptyBlankTile[1] - 1]
             changedState[emptyBlankTile[0]][emptyBlankTile[1] - 1] = 0
 
-            changedNode = Node(self.numColumns, changedState, self.depth + 1)
+            changedNode = Node(
+                self.numColumns, changedState, self.depth + 1, self.heuristicType
+            )
             changedNode.parent = self
             self.left = changedNode
         else:
@@ -55,7 +59,9 @@ class Node(Puzzle):
             ][emptyBlankTile[1] + 1]
             changedState[emptyBlankTile[0]][emptyBlankTile[1] + 1] = 0
 
-            changedNode = Node(self.numColumns, changedState, self.depth + 1)
+            changedNode = Node(
+                self.numColumns, changedState, self.depth + 1, self.heuristicType
+            )
             changedNode.parent = self
             self.right = changedNode
         else:
@@ -74,7 +80,9 @@ class Node(Puzzle):
             ][emptyBlankTile[1]]
             changedState[emptyBlankTile[0] - 1][emptyBlankTile[1]] = 0
 
-            changedNode = Node(self.numColumns, changedState, self.depth + 1)
+            changedNode = Node(
+                self.numColumns, changedState, self.depth + 1, self.heuristicType
+            )
             changedNode.parent = self
             self.up = changedNode
         else:
@@ -93,7 +101,9 @@ class Node(Puzzle):
             ][emptyBlankTile[1]]
             changedState[emptyBlankTile[0] + 1][emptyBlankTile[1]] = 0
 
-            changedNode = Node(self.numColumns, changedState, self.depth + 1)
+            changedNode = Node(
+                self.numColumns, changedState, self.depth + 1, self.heuristicType
+            )
             changedNode.parent = self
             self.down = changedNode
         else:
@@ -105,8 +115,8 @@ class Node(Puzzle):
         """
         moves = []
         parentNode: Node = deepcopy(self)
-        moves.append(parentNode)
+        moves.insert(0, parentNode.S)
         while parentNode.parent != None:
             parentNode = parentNode.parent
-            moves.append(parentNode)
+            moves.insert(0, parentNode.S)
         return moves
