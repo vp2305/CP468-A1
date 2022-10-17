@@ -52,13 +52,18 @@ def aStar(currNode):
         closedList[str(currPuzzle.S)] = currPuzzle
 
         # Found the goal state
-        if currPuzzle.h_2 == 0:
+        if (
+            currPuzzle.h_2 == 0
+            or currPuzzle.h_1 == 0
+            or currPuzzle.S == currPuzzle.goalState
+        ):
             # return path
-            # print("\nReached goal state")
+            # print("\nDone!!")
             # print(currPuzzle)
             # print("Current Length of open list: ", len(openList))
             # print("Current Length of Close list: ", len(closedList))
             # print("\n")
+            # break
             # print("Path to reach goal state:")
             moves = currPuzzle.resultPath()
             return moves, currPuzzle.depth, len(openList), len(closedList)
@@ -122,7 +127,8 @@ def aStar(currNode):
 
 table = []
 
-for x in range(10):
+for x in range(100):
+    print("Iteration: ", x + 1)
     # Heuristic type. h1, h2, h3
     puzzleNode = Node(3, [], 0, "h1")
     h1_path, h1_num_moves, h1_unVisitedNode, h1_visitedNode = aStar(puzzleNode)

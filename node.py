@@ -1,5 +1,4 @@
 from copy import deepcopy
-import copy
 from puzzle import Puzzle
 
 

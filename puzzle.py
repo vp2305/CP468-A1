@@ -80,7 +80,6 @@ class Puzzle:
                 return True
             else:
                 return False
-
         return False
 
     def createGoalState(self):
@@ -124,37 +123,34 @@ class Puzzle:
         Linear conflict implementation
         """
         linearConflict = 0
-        totalSumOfManhattanDistances = 0
-        # Implement linear conflict heuristic
+        totalSumOfManhattanDistances = self.h2()
+
+        # Check for linear conflicts
         for c in range(self.numColumns):
             for r in range(self.numRows):
                 if self.S[r][c] != 0 and self.S[r][c] != self.goalState[r][c]:
-                    numRowMove = abs(self.S[r][c] // self.numColumns - r)
-                    numColMove = abs(self.S[r][c] % self.numColumns - c)
-                    totalSumOfManhattanDistances += numRowMove + numColMove
-
-                    # Check for linear conflict
                     # Check for row conflict
-                    if self.S[r][c] // self.numColumns == r:
-                        for i in range(c + 1, self.numColumns):
-                            if self.S[r][i] // self.numColumns == r:
-                                if (
-                                    self.S[r][c] % self.numColumns
-                                    > self.S[r][i] % self.numColumns
-                                ):
-                                    linearConflict += 2
-
-                    # Check for column conflict
                     if self.S[r][c] % self.numColumns == c:
                         for i in range(r + 1, self.numRows):
-                            if self.S[i][c] % self.numColumns == c:
-                                if (
-                                    self.S[r][c] // self.numColumns
-                                    > self.S[i][c] // self.numColumns
-                                ):
-                                    linearConflict += 2
+                            if (
+                                self.S[i][c] != 0
+                                and self.S[i][c] != self.goalState[i][c]
+                            ):
+                                if self.S[i][c] % self.numColumns == c:
+                                    if self.S[r][c] > self.S[i][c]:
+                                        linearConflict += 1
+                    # Check for column conflict
+                    if self.S[r][c] // self.numColumns == r:
+                        for j in range(c + 1, self.numColumns):
+                            if (
+                                self.S[r][j] != 0
+                                and self.S[r][j] != self.goalState[r][j]
+                            ):
+                                if self.S[r][j] // self.numColumns == r:
+                                    if self.S[r][c] > self.S[r][j]:
+                                        linearConflict += 1
 
-        return totalSumOfManhattanDistances + linearConflict
+        return totalSumOfManhattanDistances + 2 * linearConflict
 
     def fScore(self):
         """
